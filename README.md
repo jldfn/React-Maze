@@ -1,3 +1,8 @@
+Maze generator/solver on react. Uses a table of buttons as a grid to paint mazes on.
+State of buttons is stored both in the PathFinder component and in the Square component to optimize performance with a grid larger than 50*50
+this way App can update only when you tell it to find a path and not re-render the whole table because you clicked a single square and grid state has changed
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
