@@ -46,7 +46,8 @@ class PathFinder extends React.Component{
                 if(this.state.stepSquare[i][j]!==nextState.stepSquare[i][j]) return true
             }
         }
-        return false
+        return nextState.mazeFlag !== this.state.mazeFlag;
+
     }
 
     handleMouseDown(){
@@ -99,11 +100,37 @@ class PathFinder extends React.Component{
     }
 
     changeHeight(event){
-        this.setState({height : event.target.value})
+        let sq = []
+        for(let i=0; i<event.target.value; i++){
+            let row = []
+            for(let j=0; j< this.state.width;j++){
+                row.push(0)
+            }
+            sq.push(row)
+        }
+        let steps = sq.map(function(arr) {
+            return arr.slice().fill(0);
+        });
+        this.setState({stepSquare : steps, squares : sq, height : event.target.value})
     }
 
     changeWidth(event){
-        this.setState({width : event.target.value})
+        let sq = []
+        for(let i=0; i<this.state.height; i++){
+            let row = []
+            for(let j=0; j< event.target.value;j++){
+                row.push(0)
+            }
+            sq.push(row)
+        }
+        let steps = sq.map(function(arr) {
+            return arr.slice().fill(0);
+        });
+        this.setState({stepSquare : steps, squares : sq, width : event.target.value})
+    }
+
+    createMaze(){
+        this.setState({mazeFlag : !this.state.mazeFlag, squares:generateMazeWithPrim(this.state.height, this.state.width)})
     }
 
     createPath(){
@@ -128,14 +155,15 @@ class PathFinder extends React.Component{
         return(
             <div className={"pathFinder"} onMouseDown={()=>this.handleMouseDown()}
                  onMouseUp={()=>this.handleMouseUp()}>
+                <Button onClick={()=>this.createMaze()}>maze</Button>
                 <TextField id="standard-basic" label="Height"
-                           value={this.state.height}
-                           onChange={(event)=>this.changeHeight(event)}
+                           defaultValue={this.state.height}
+                           onBlur={(event)=>this.changeHeight(event)}
                 />
                 <TextField id="standard-basic"
                            label="Width"
-                           value={this.state.width}
-                           onChange={(event)=>this.changeWidth(event)}/>
+                           defaultValue={this.state.width}
+                           onBlur={(event)=>this.changeWidth(event)}/>
                 White <Switch
                     checked={this.state.paintColorIsBlack}
                     onChange={()=>this.changePaintColor()}
